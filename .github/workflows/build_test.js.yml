@@ -1,0 +1,25 @@
+name: build and test
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout the code
+      uses: actions/checkout@v4
+    - name: Use Node.js 24
+      uses: actions/setup-node@v4
+      with:
+        node-version: 24
+        cache: 'npm'
+    - name: install dependences
+      run: npm install
+    - name: Run test
+      run: npm test
