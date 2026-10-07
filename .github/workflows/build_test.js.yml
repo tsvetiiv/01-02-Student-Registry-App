@@ -27,7 +27,7 @@ jobs:
       - name: Run test
         run: npm test
 
-        deploy_to_render:
+      - name: deploy_to_render:
         needs: build test
         runs-on: ubuntu-latest
         with:
