@@ -2,28 +2,34 @@ name: build and test with matrix
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
-         node-version: [24, 23, 22]
+        node-version: [24, 23, 22]
 
     steps:
-    - name: Checkout the code
-      uses: actions/checkout@v4
-    - name: Use Node.js ${{ matrix.node-version}}
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ matrix.node-version}}
-        cache: 'npm'
-    - name: install dependences
-      run: npm install
-    - name: Run test
-      run: npm test
+      - name: Checkout the code
+        uses: actions/checkout@v4
+      - name: Use Node.js ${{ matrix.node-version}}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version}}
+          cache: "npm"
+      - name: install dependences
+        run: npm install
+      - name: Run test
+        run: npm test
+
+        deploy_to_render:
+        needs: build test
+        runs-on: ubuntu-latest
+        with:
+          service-id: ${{ secrets.SERVICE_ID }}
+          api-key: ${{ secrets.API_KEY }}
