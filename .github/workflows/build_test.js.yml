@@ -2,47 +2,35 @@ name: build and test with matrix
 
 on:
   push:
-    branches: ["main"]
+    branches: [ "main" ]
   pull_request:
-    branches: ["main"]
+    branches: [ "main" ]
 
 jobs:
-  build:
+  build_test:
+
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [24, 23, 22]
-
     steps:
-      - name: Checkout the code
-        uses: actions/checkout@v4
-      - name: Use Node.js ${{ matrix.node-version}}
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ matrix.node-version}}
-          cache: "npm"
-      - name: install dependences
-        run: npm install
-      - name: Run test
-        run: npm test
+    - name: Checkout the code 
+      uses: actions/checkout@v4
+    - name: Set up Node.js 24
+      uses: actions/setup-node@v4
+      with:
+        node-version: 24.x
+        cache: 'npm'
+    - name: Install dependencies
+      run: npm install
+    - name: Run tests
+      run: npm test
 
-      deploy_to_render:
-
+  deploy_to_render:
     needs: build_test
-
-    if: github.ref == 'refs/heads/main'
-
+    if : github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
-
     steps:
-
-      - uses: JorgeLNJunior/render-deploy@v1.5.0
-
-        with:
-
-          service_id: ${{ secrets.SERVICE_ID }}
-
-          api_key: ${{ secrets.API_KEY }}
-
-          wait_deploy: true
+    - uses: JorgeLNJunior/render-deploy@v1.5.0
+      with:
+        service_id: ${{ secrets.SERVICE_ID }}
+        api_key: ${{ secrets.API_KEY }}
+        wait_deploy: true
